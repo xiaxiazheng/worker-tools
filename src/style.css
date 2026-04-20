@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+body { background: #F8FAFC; }
+.tab-slider { transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.card { transition: all 0.2s ease; }
+.card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(99, 102, 241, 0.15); }
+.btn-press:active { transform: scale(0.95); }
+.fade-in { animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.priority-high { border-left: 4px solid #EF4444; }
+.priority-medium { border-left: 4px solid #F59E0B; }
+.priority-low { border-left: 4px solid #34D399; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.cute-shadow { box-shadow: 0 4px 20px rgba(99, 102, 241, 0.1); }
+.side-panel { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.overlay { transition: opacity 0.3s ease; }
