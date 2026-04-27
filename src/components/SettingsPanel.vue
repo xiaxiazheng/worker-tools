@@ -86,7 +86,28 @@
               保存设置
             </button>
 
-            <p v-if="status" class="text-sm text-center" :class="statusClass">{{ status }}</p>
+            <button
+              @click="fetchModels"
+              :disabled="!localSettings.apiHost || !localSettings.apiKey || fetchingModels"
+              class="btn-press w-full py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {{ fetchingModel ? '获取中...' : '获取模型列表' }}
+            </button>
+
+            <!-- Models list display -->
+            <div v-if="modelsList.length > 0" class="mt-4 p-4 bg-gray-50 rounded-xl">
+              <h4 class="text-sm font-medium text-gray-700 mb-2">可用模型：</h4>
+              <div class="space-y-2 max-h-48 overflow-y-auto">
+                <div
+                  v-for="model in modelsList"
+                  :key="model.id"
+                  @click="selectModel(model.id)"
+                  class="px-3 py-2 bg-white rounded-lg text-sm cursor-pointer hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
+                >
+                  {{ model.id }}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -97,6 +118,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useSettings } from '../composables/useSettings'
+import { useToast } from '../composables/useToast'
 
 const props = defineProps({
   visible: Boolean
@@ -105,26 +127,70 @@ const props = defineProps({
 const emit = defineEmits(['close', 'saved'])
 
 const { getSettings, saveSettings } = useSettings()
+const { show: showToast } = useToast()
 
 const localSettings = ref(getSettings())
-const status = ref('')
-const statusClass = ref('text-emerald-500')
+const fetchingModel = ref(false)
+const modelsList = ref([])
 
 watch(() => props.visible, (val) => {
   if (val) {
     localSettings.value = getSettings()
-    status.value = ''
   }
 })
 
 const handleSave = () => {
   saveSettings(localSettings.value)
-  status.value = '✓ 设置已保存'
-  statusClass.value = 'text-emerald-500'
+  showToast('设置已保存')
   emit('saved')
+}
 
-  setTimeout(() => {
-    status.value = ''
-  }, 2000)
+const fetchModels = async () => {
+  if (!localSettings.value.apiHost || !localSettings.value.apiKey) {
+    showToast('请先填写 API Host 和 API Key', 'error')
+    return
+  }
+
+  fetchingModel.value = true
+  modelsList.value = []
+
+  try {
+    const params = new URLSearchParams({
+      apiHost: localSettings.value.apiHost,
+      apiKey: localSettings.value.apiKey,
+      provider: localSettings.value.provider
+    })
+    const response = await fetch(`http://localhost:3000/api/models?${params}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error(data.error?.message || `请求失败 (${response.status})`)
+    }
+
+    // Extract models from response - OpenAI format: { data: [{ id: "..." }] }
+    if (data.data && Array.isArray(data.data)) {
+      modelsList.value = data.data
+    } else if (data.models && Array.isArray(data.models)) {
+      // Anthropic format or other
+      modelsList.value = data.models
+    } else {
+      modelsList.value = []
+    }
+
+    showToast(`获取到 ${modelsList.value.length} 个模型`)
+  } catch (error) {
+    showToast(error.message, 'error')
+  } finally {
+    fetchingModel.value = false
+  }
+}
+
+const selectModel = (modelId) => {
+  localSettings.value.model = modelId
+  showToast(`已选择: ${modelId}`)
 }
 </script>
