@@ -27,13 +27,36 @@
               <h3 class="text-sm font-medium text-gray-500 mb-3">AI 设置</h3>
               <div class="space-y-4">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1.5">API 接口地址</label>
+                  <label class="block text-sm font-medium text-gray-700 mb-1.5">API Host</label>
                   <input
-                    v-model="localSettings.apiUrl"
+                    v-model="localSettings.apiHost"
                     type="text"
-                    placeholder="https://api.minimaxi.com/anthropic/messages"
+                    placeholder="https://api.minimaxi.com"
                     class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none transition-all text-sm"
                   />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1.5">API 类型</label>
+                  <div class="flex gap-4">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        v-model="localSettings.provider"
+                        value="anthropic"
+                        class="w-4 h-4 text-indigo-500 focus:ring-indigo-400"
+                      />
+                      <span class="text-sm text-gray-700">Anthropic</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        v-model="localSettings.provider"
+                        value="openai"
+                        class="w-4 h-4 text-indigo-500 focus:ring-indigo-400"
+                      />
+                      <span class="text-sm text-gray-700">OpenAI / GPT</span>
+                    </label>
+                  </div>
                 </div>
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1.5">模型名称</label>

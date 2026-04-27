@@ -9,6 +9,8 @@ npm run server:dist
 npm run server
 ```
 
+优化了一下，直接给 server.js 加上静态资源代理，所以直接运行`npm run server`启动即可。
+
 ## worker-tools 产品介绍
 
 ### 产品定位

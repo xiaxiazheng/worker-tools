@@ -26,8 +26,8 @@
       <div class="relative flex">
         <div
           id="tab-slider"
-          class="tab-slider absolute top-0 bottom-0 w-1/3 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl"
-          :style="{ left: `${currentTab * 33.333}%` }"
+          class="tab-slider absolute top-0 bottom-0 w-1/4 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl"
+          :style="{ left: `${currentTab * 25}%` }"
         ></div>
         <button
           v-for="(tab, index) in tabs"
@@ -46,9 +46,10 @@
 
     <!-- Content Panels -->
     <div id="panels">
-      <TodoPanel v-show="currentTab === 0" />
-      <ClipboardPanel v-show="currentTab === 1" />
-      <QRCodePanel v-show="currentTab === 2" />
+      <ChatPanel v-show="currentTab === 0" />
+      <TodoPanel v-show="currentTab === 1" />
+      <ClipboardPanel v-show="currentTab === 2" />
+      <QRCodePanel v-show="currentTab === 3" />
     </div>
 
     <!-- Footer -->
@@ -76,6 +77,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import SettingsPanel from './components/SettingsPanel.vue'
+import ChatPanel from './components/ChatPanel.vue'
 import TodoPanel from './components/TodoPanel.vue'
 import ClipboardPanel from './components/ClipboardPanel.vue'
 import QRCodePanel from './components/QRCodePanel.vue'
@@ -89,6 +91,11 @@ const currentTab = ref(0)
 const settingsVisible = ref(false)
 
 const tabs = [
+  {
+    id: 'chat',
+    name: '对话',
+    icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>'
+  },
   {
     id: 'todo',
     name: '待办',
